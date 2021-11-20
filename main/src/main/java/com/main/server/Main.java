@@ -7,51 +7,66 @@ import java.io.IOException;
 import java.util.Scanner;
 
 
-class App {
+class Connect {
     private Server server;
 
-    public App() {
+    public Connect() {
         try {
-            server = new Server("localhost", 5000);
-
             start();
-
             server.close();
         } catch (IOException error) {
             System.out.println(error.getMessage());
         }
     }
 
-    private void start() throws IOException {
+    public void start() throws IOException {
         Scanner scan = new Scanner(System.in);
 
-        String message = "";
+        server = new Server("localhost", 5000);
+
         while (true) {
-            while (true) {
-                System.out.printf("[%s]: ", server.getClientName());
-                message = server.reciveMessage();
-                System.out.print(message + "\n");
-                if (message.endsWith("~")) break;
+            if (getClientMessage().endsWith("Endconn~")) {
+                scan.close();
+                return;
             }
 
-            if (message.endsWith("Endconn~")) break;
-
-            while (true) {
-                System.out.print("[you]: ");
-                message = scan.nextLine();
-                server.sendMessage(message);
-
-                if (message.endsWith("~")) break;
+            if (getUserMessage(scan).endsWith("Endconn~")) {
+                scan.close();
+                return;
             }
-            
+        }
+    }
+
+    private String getUserMessage(Scanner scan) throws IOException {
+        String message;
+
+        while (true) {
+            System.out.print("[you]: ");
+            message = scan.nextLine();
+            server.sendMessage(message);
+            if (message.endsWith("~") || message == "connect lose") break;
         }
 
-        scan.close();
+        return message;
     }
+
+    private String getClientMessage() throws IOException {
+        String message;
+
+        while (true) {
+            System.out.printf("[%s]: ", server.getClientName());
+            message = server.reciveMessage();
+            System.out.print(message + "\n");
+            if (message.endsWith("~") || message == "connect lose") break;
+        }
+
+        return message;
+    }
+
 }
 
 public class Main {
     public static void main(String[] args) {
-        new App();
+        new Connect();
     }
 }

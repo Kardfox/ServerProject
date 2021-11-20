@@ -18,7 +18,8 @@ public class Client extends Socket {
     }
 
     public String reciveMessage() throws IOException {
-        return server.inReader.readLine();
+        String message = server.inReader.readLine();
+        return message == null ? "~" : message;
     }
 
     public void sendMessage(String message) throws IOException {

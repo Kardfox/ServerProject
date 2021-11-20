@@ -13,7 +13,7 @@ public class Server extends ServerSocket {
     private ClientData client;
 
     public Server(String host, int port) throws IOException {
-        super(port, 5, InetAddress.getByName(host));
+        super(port, 1, InetAddress.getByName(host));
 
         System.out.println("\nOpen a server. Waiting a connect by client");
         openConnection();
@@ -28,7 +28,8 @@ public class Server extends ServerSocket {
     }
 
     public String reciveMessage() throws IOException {
-        return client.inReader.readLine();
+        String message = client.inReader.readLine();
+        return message == null ? "connect lose" : message;
     }
 
     public void sendMessage(String message) throws IOException {

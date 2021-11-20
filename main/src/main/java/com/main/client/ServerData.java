@@ -1,4 +1,4 @@
-package com.main.server;
+package com.main.client;
 
 //io
 import java.io.InputStream;

@@ -44,5 +44,5 @@ public class Server extends ServerSocket {
     @Override
     protected void finalize() throws Throwable {
        close();
-   }
+    }
 }

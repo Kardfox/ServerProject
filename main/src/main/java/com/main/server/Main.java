@@ -20,19 +20,17 @@ class Connect {
     }
 
     public void start() throws IOException {
-        Scanner scan = new Scanner(System.in);
+        try (Scanner scan = new Scanner(System.in)) {
+            server = new Server("localhost", 5000);
+            
+            while (true) {
+                if (getClientMessage().endsWith("Endconn~")) {
+                    return;
+                }
 
-        server = new Server("localhost", 5000);
-
-        while (true) {
-            if (getClientMessage().endsWith("Endconn~")) {
-                scan.close();
-                return;
-            }
-
-            if (getUserMessage(scan).endsWith("Endconn~")) {
-                scan.close();
-                return;
+                if (getUserMessage(scan).endsWith("Endconn~")) {
+                    return;
+                }
             }
         }
     }

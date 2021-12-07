@@ -8,29 +8,27 @@ import java.util.Scanner;
 class Connect {
     private Client client;
 
-    public Connect() {
+    public Connect(String userName) {
         try {
-            start();
+            start(userName);
             client.close();
         } catch (IOException error) {
             System.out.println(error.getMessage());
         }
     }
 
-    public void start() throws IOException {
-        Scanner scan = new Scanner(System.in);
+    public void start(String userName) throws IOException {
+        try (Scanner scan = new Scanner(System.in))  {
+            client = new Client("localhost", 5000, userName);
 
-        client = new Client("localhost", 5000, "George");
+            while (true) {
+                if (getUserMessage(scan).endsWith("Endconn~")) {
+                    return;
+                }
 
-        while (true) {
-            if (getUserMessage(scan).endsWith("Endconn~")) {
-                scan.close();
-                return;
-            }
-
-            if (getServerMessage().endsWith("Endconn~")) {
-                scan.close();
-                return;
+                if (getServerMessage().endsWith("Endconn~")) {
+                    return;
+                }
             }
         }
     }
@@ -65,6 +63,9 @@ class Connect {
 
 public class Main {
     public static void main(String[] args) {
-        new Connect();
+        try (Scanner scan = new Scanner(System.in)) {
+            System.out.print("\nEnter your name: ");
+            new Connect(scan.nextLine());
+        }
     }
 }
